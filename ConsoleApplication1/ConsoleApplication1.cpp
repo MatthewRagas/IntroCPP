@@ -155,68 +155,117 @@ void main()
 	}
 	std::cout << std::endl;
 
-	////save cursor position
-	//std::cout << SAVE_CURSOR_POS;
-	//std::cout << INDENT << "How tall are you in centimeters?" << INDENT << YELLOW;
-	//std::cin >> height;
-	//std::cout << RESET_COLOR << std::endl;
-	//
-	//if (std::cin.fail())
-	//{
-	//	std::cout << INDENT << "You have failed the first challenge and are eaten by a grue." << std::endl;
-	//}
-	//else
-	//{
-	//	std::cout << INDENT << "You entered: " << height << std::endl;
-	//}
+	bool gameOver = false;
+	int playerX = 0;
+	int playerY = 0;
 
-	//std::cin.clear();
-	//std::cin.ignore(std::cin.rdbuf()->in_avail());
-	//std::cin.get();
+	//game loop
+	while (!gameOver)
+	{
+		//prepare screen for output
+		//move cursor to start of the 1st Q, then up 1, delete and insert 4 lines
+		std::cout << RESTORE_CURSOR_POS << CSI << "A" << CSI << "4M" << CSI << "4L" << std::endl;
 
-	////move the cursor to the start of the 1st question
-	//std::cout << RESTORE_CURSOR_POS;
-	////delete the next 3 lines of text
-	//std::cout << CSI << "3M";
-	////insert 3 lines (so map stays in the same place)
-	//std::cout << CSI << "3L";
+		//write description of current room
+		switch (rooms[playerY][playerX])
+		{
+		case EMPTY:
+			std::cout << INDENT << "You are in an empty meadow. There is nothing of note here." << std::endl;
+			break;
+		case ENEMY:
+			std::cout << INDENT << "BEWARE. An enemy is approaching." << std::endl;
+			break;
+		case TREASURE:
+			std::cout << INDENT << "Your journey has been rewarded. You have found some treasure." << std::endl;
+			break;
+		case FOOD:
+			std::cout << INDENT << "At last! You collect some food to sustain you on your journey." << std::endl;
+			break;
+		case ENTRANCE:
+			std::cout << INDENT << "The entrance you used to enter this maze is blocked. There is no going back." << std::endl;
+			break;
+		case EXIT:
+			std::cout << INDENT << "Despite all odds, you made it to the exit. Congratulations." << std::endl;
+			gameOver = true;
+			continue;
+		}
 
-	//std::cout << INDENT << "What is the first letter of your name?" << INDENT << YELLOW;
+		//list the directions the p[layer can take
+		std::cout << INDENT << "You can see paths leading to the " <<
+			((playerX > 0) ? "west, " : "") <<
+			((playerX < MAZE_WIDTH - 1) ? "east, " : "") <<
+			((playerY > 0) ? "north, " : "") <<
+			((playerY < MAZE_HEIGHT - 1) ? "south, " : "") << std::endl;
 
-	//std::cin.clear();
-	//std::cin.ignore(std::cin.rdbuf()->in_avail());
-	//std::cin >> firstLetterOfName;
-	//std::cout << RESET_COLOR << std::endl;
+		std::cout << INDENT << "Where to now?";
 
-	//if (std::cin.fail() || !isalpha(firstLetterOfName))
-	//{
-	//	std::cout << INDENT << "You have failed the second challenge and are eaten by a grue." << std::endl;
-	//}
-	//else
-	//{
-	//	std::cout << INDENT << "You enetered: " << firstLetterOfName << std::endl;
-	//}
+		int x = INDENT_X + (6 * playerX) + 3;
+		int y = MAP_Y + playerY;
 
-	//std::cin.clear();
-	//std::cin.ignore(std::cin.rdbuf()->in_avail());
-	//std::cin.get();
+		//draw the player's position on the map
+		//move cursor to map ppos and delete character at current position
+		std::cout << CSI << y << ";" << x << "H";
+		std::cout << MAGENTA << "\x81";
 
-	////move the cursor to the start of the 1st question
-	//std::cout << RESTORE_CURSOR_POS;
-	//std::cout << CSI << "A";		//cursor up 1
-	//std::cout << CSI << "4M" << CSI << "4L";		//delete the next 4 lines of text
+		//move cursor to position for player to enter input
+		std::cout << CSI << PLAYER_INPUT_Y << ";" << PLAYER_INPUT_X << "H" << YELLOW;
 
-	//if (firstLetterOfName != 0) 
-	//{
-	//	avatarHP = (float)height / (firstLetterOfName * 0.02f);
-	//}
-	//else
-	//{
-	//	avatarHP = 0;
-	//}
+		//clear the input buffer, ready for player input
+		std::cin.clear();
+		std::cin.ignore(std::cin.rdbuf()->in_avail());
 
-	//std::cout << INDENT << "Using a complex deterministic algorithm, it has been "
-	//	"caculated that you have " << avatarHP << " hit point(s)." << std::endl;
+		int direction = 0;
+		std::cin >> direction;
+		std::cout << RESET_COLOR;
+
+		if (std::cin.fail())
+			continue; //go back to the top of the game loop and ask again
+
+		std::cout << CSI << y << ";" << x << "H";
+		switch (rooms[playerY][playerX])
+		{
+		case EMPTY:
+			std::cout << GREEN << "\xb0" << RESET_COLOR;
+			break;
+		case ENEMY:
+			std::cout << RED << "\x94" << RESET_COLOR;
+			break;
+		case TREASURE:
+			std::cout << YELLOW << "$" << RESET_COLOR;
+			break;
+		case FOOD:
+			std::cout << WHITE << "\xcf" << RESET_COLOR;
+			break;
+		case ENTRANCE:
+			std::cout << WHITE << "\x9d" << RESET_COLOR;
+			break;
+		case EXIT:
+			std::cout << WHITE << "\xFE" << RESET_COLOR;
+			break;
+		}
+
+		switch (direction)
+		{
+		case EAST:
+			if (playerX < MAZE_WIDTH - 1)
+				playerX++;
+			break;
+		case WEST:
+			if (playerX > 0)
+				playerX--;
+			break;
+		case NORTH:
+			if (playerY > 0)
+				playerY--;
+			break;
+		case SOUTH:
+			if (playerY < MAZE_HEIGHT - 1)
+				playerY++;
+		default:
+			//do nothing, go back to the top of the loop and ask again
+			break;
+		}		
+	}//end of game loop
 		
 	std::cout << std::endl << INDENT << "Press 'Enter' to exit the program.";
 
