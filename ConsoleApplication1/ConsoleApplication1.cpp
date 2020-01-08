@@ -86,17 +86,17 @@ void main()
 
 	srand(time(nullptr));
 
-	//fill the arrays with random room types
-	for (int y = 0; y < MAZE_HEIGHT; y++)
-	{
-		for (int x = 0; x < MAZE_WIDTH; x++)
-		{
-			rooms[y][x] = rand() % MAX_RANDOM_TYPE;
-		}
-	}
-	//set the entrance and exit of the maze
-	rooms[0][0] = ENTRANCE;
-	rooms[MAZE_HEIGHT - 1][MAZE_WIDTH - 1] = EXIT;
+	////fill the arrays with random room types
+	//for (int y = 0; y < MAZE_HEIGHT; y++)
+	//{
+	//	for (int x = 0; x < MAZE_WIDTH; x++)
+	//	{
+	//		rooms[y][x] = rand() % MAX_RANDOM_TYPE;
+	//	}
+	//}
+	////set the entrance and exit of the maze
+	//rooms[0][0] = ENTRANCE;
+	//rooms[MAZE_HEIGHT - 1][MAZE_WIDTH - 1] = EXIT;
 
 
 	system("cls");
@@ -105,7 +105,8 @@ void main()
 	std::cout << INDENT << "ZORP is a game of adventure, danger, and low cunning." << std::endl;
 	std::cout << INDENT << "It is definitely not related to any other text-based adventure game." << std::endl << std::endl;
 
-	//std::cout << INDENT << "First, some questions..." << std::endl;
+	//save cursor position
+	std::cout << SAVE_CURSOR_POS;
 
 	//fill the arrays with random room types
 	for (int y = 0; y < MAZE_HEIGHT; y++)
@@ -120,6 +121,10 @@ void main()
 		}
 	}
 
+	//set the entrance and exit of the maze
+	rooms[0][0] = ENTRANCE;
+	rooms[MAZE_HEIGHT - 1][MAZE_WIDTH - 1] = EXIT;
+
 	//output the map
 	std::cout << CSI << MAP_Y << ";" << 0 << "H";
 	for (int y = 0; y < MAZE_HEIGHT; y++)
@@ -130,22 +135,22 @@ void main()
 			switch (rooms[y][x])
 			{
 			case EMPTY:
-				std::cout << "[ " << GREEN << "\xb0" << RESET_COLOR << " ]";
+				std::cout << "[ " << GREEN << "\xb0" << RESET_COLOR << " ] ";
 				break;
 			case ENEMY:
-				std::cout << "[ " << RED << "\x94" << RESET_COLOR << " ]";
+				std::cout << "[ " << RED << "\x94" << RESET_COLOR << " ] ";
 				break;
 			case TREASURE:
-				std::cout << "[ " << YELLOW << "$" << RESET_COLOR << " ]";
+				std::cout << "[ " << YELLOW << "$" << RESET_COLOR << " ] ";
 				break;
 			case FOOD:
-				std::cout << "[ " << WHITE << "\xcf" << RESET_COLOR << " ]";
+				std::cout << "[ " << WHITE << "\xcf" << RESET_COLOR << " ] ";
 				break;
 			case ENTRANCE:
-				std::cout << "[ " << WHITE << "\x9d" << RESET_COLOR << " ]";
+				std::cout << "[ " << WHITE << "\x9d" << RESET_COLOR << " ] ";
 				break;
 			case EXIT:
-				std::cout << "[ " << WHITE << "\xFE" << RESET_COLOR << " ]";
+				std::cout << "[ " << WHITE << "\xFE" << RESET_COLOR << " ] ";
 				break;
 			}
 
