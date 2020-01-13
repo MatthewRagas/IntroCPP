@@ -4,10 +4,9 @@
 #include <iostream>
 using namespace std;
 
-Room::Room() : m_type{EMPTY}
-{	
+Room::Room() : m_type{ EMPTY }, m_mapPosition{ 0,0 }
+{
 }
-
 
 Room::~Room()
 {
