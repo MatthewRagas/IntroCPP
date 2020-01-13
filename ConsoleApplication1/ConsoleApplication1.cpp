@@ -49,6 +49,12 @@ const int SOUTH = 2;
 const int LOOK = 9;
 const int FIGHT = 10;
 
+struct Point2D
+{
+	int x;
+	int y;
+};
+
 bool enableVirtualTerminal()
 {
 	//Set output mode to handle virtual terminal sequences
@@ -101,17 +107,17 @@ void drawWelcomeMessage()
 	cout << INDENT << "It is definitely not related to any other text-based adventure game." << endl << endl;
 }
 
-void drawRoom(int map[MAZE_HEIGHT][MAZE_WIDTH], int x, int y)
+void drawRoom(int map[MAZE_HEIGHT][MAZE_WIDTH], Point2D position)
 {
 	//find the console output position
-	int outX = INDENT_X + (6 * x) + 3;
-	int outY = MAP_Y + y;
+	int outX = INDENT_X + (6 * position.x) + 3;
+	int outY = MAP_Y + position.y;
 
 	//jump to the correct location
 	cout << CSI << outY << ";" << outX << "H";
 
 	//draw the room
-	switch (map[y][x])
+	switch (map[position.y][position.x])
 
 	{
 	case EMPTY:
@@ -137,14 +143,16 @@ void drawRoom(int map[MAZE_HEIGHT][MAZE_WIDTH], int x, int y)
 
 void drawMap(int map[MAZE_HEIGHT][MAZE_WIDTH])
 {
+	Point2D position = { 0,0 };
+
 	//reset draw colors
 	cout << RESET_COLOR;
-	for (int y = 0; y < MAZE_HEIGHT; y++)
+	for (position.y = 0; position.y < MAZE_HEIGHT; position.y++)
 	{
 		cout << INDENT;
-		for (int x = 0; x < MAZE_WIDTH; x++)
+		for (position.x = 0; position.x < MAZE_WIDTH; position.x++)
 		{
-			drawRoom(map, x, y);
+			drawRoom(map, position);
 		}
 		cout << endl;
 	}
@@ -183,28 +191,28 @@ void drawRoomDescription(int roomType)
 	}
 }
 
-void drawPlayer(int x, int y)
+void drawPlayer(Point2D position)
 {
-	x = INDENT_X + (6 * x) + 3;
-	y = MAP_Y + y;
+	Point2D outPos = { INDENT_X + (6 * position.x) + 3,
+	MAP_Y + position.y };
 
 	//draw the player's positioni on the map
 	//move cursor to map pos and delete character at current position
-	cout << CSI << y << ";" << x << "H";
+	cout << CSI << outPos.y << ";" << outPos.x << "H";
 	cout << MAGENTA << "\x81" << RESET_COLOR;
 }
 
-void drawValidDirections(int x, int y)
+void drawValidDirections(Point2D position)
 {
 	//reset draw colors
 	cout << RESET_COLOR;
 	//jump to the corect location
 	cout << CSI << MOVEMENT_DESC_Y + 1 << ";" << 0 << "H";
 	cout << INDENT << "You can see paths leading to the " <<
-		((x > 0) ? "west, " : "") <<
-		((x < MAZE_WIDTH - 1) ? "east, " : "") <<
-		((y > 0) ? "north, " : "") <<
-		((y < MAZE_HEIGHT - 1) ? "south, " : "") << std::endl;
+		((position.x > 0) ? "west, " : "") <<
+		((position.x < MAZE_WIDTH - 1) ? "east, " : "") <<
+		((position.y > 0) ? "north, " : "") <<
+		((position.y < MAZE_HEIGHT - 1) ? "south, " : "") << std::endl;
 }
 
 int getMovementDirection()
@@ -300,8 +308,7 @@ void main()
 	int rooms[MAZE_HEIGHT][MAZE_WIDTH];
 
 	bool gameOver = false;
-	int playerX = 0;
-	int playerY = 0;
+	Point2D player = { 0,0 };
 
 	if (enableVirtualTerminal() == false)
 	{
@@ -321,43 +328,43 @@ void main()
 	//game loop
 	while (!gameOver)
 	{
-		drawRoomDescription(rooms[playerY][playerX]);
+		drawRoomDescription(rooms[player.y][player.x]);
 
-		drawPlayer(playerX, playerY);
+		drawPlayer(player);
 
-		if (rooms[playerX][playerY] == EXIT)
+		if (rooms[player.x][player.y] == EXIT)
 		{
 			gameOver = true;
 			continue;
 		}
 		
 		//list the directions the player can take
-		drawValidDirections(playerX, playerY);
+		drawValidDirections(player);
 		
 		int command = getCommand();
 
-		drawRoom(rooms, playerX, playerY);
+		drawRoom(rooms, player);
 
 		switch (command)
 		{
 		case EAST:
-			if (playerX < MAZE_WIDTH - 1)
-				playerX++;
+			if (player.x < MAZE_WIDTH - 1)
+				player.x++;
 			break;
 		case WEST:
-			if (playerX > 0)
-				playerX--;
+			if (player.x > 0)
+				player.x--;
 			break;
 		case NORTH:
-			if (playerY > 0)
-				playerY--;
+			if (player.y > 0)
+				player.y--;
 			break;
 		case SOUTH:
-			if (playerY < MAZE_HEIGHT - 1)
-				playerY++;
+			if (player.y < MAZE_HEIGHT - 1)
+				player.y++;
 			break;
 		case FIGHT:
-			drawPlayer(playerX, playerY);
+			drawPlayer(player);
 			cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You coud try to fight, but you don't have a weapon." << endl;
 			cout << INDENT << "Press 'Enter' to continue.";
 			cin.clear();
@@ -365,7 +372,7 @@ void main()
 			cin.get();
 			break;
 		case LOOK:
-			drawPlayer(playerX, playerY);
+			drawPlayer(player);
 			cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You look around, but see nothing worth mentioning.";
 			cin.clear();
 			cin.ignore(std::cin.rdbuf()->in_avail());
