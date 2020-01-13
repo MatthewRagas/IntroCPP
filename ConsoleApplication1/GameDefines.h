@@ -1,5 +1,6 @@
 #pragma once
 
+
 const char* const ESC = "\x1b";
 const char* const CSI = "\x1b[";
 

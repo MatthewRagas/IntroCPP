@@ -4,10 +4,17 @@
 #include "pch.h"
 #include <iostream>
 #include "Game.h"
+#include "Windows.h"
 using namespace std;
 
 void main()
 {
+	DWORD dwMode = 0;
+	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	GetConsoleMode(hOut, &dwMode);
+	dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+	SetConsoleMode(hOut, dwMode);
+
 	Game game;
 
 	if (game.startup() == false)

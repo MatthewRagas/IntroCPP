@@ -50,6 +50,12 @@ bool Game::enableVirtualTerminal()
 	}
 
 	DWORD dwMode = 0;
+	if (!GetConsoleMode(hOut, &dwMode))
+	{
+		return false;
+	}
+
+	dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
 	if (!SetConsoleMode(hOut, dwMode))
 	{
 		return false;
@@ -88,7 +94,7 @@ void Game::drawWelcomeMessage()
 
 void Game::drawMap()
 {
-	Point2D position = { 0,0 };
+	Point2D position = { 0, 0 };
 
 	//reset draw colors
 	cout << RESET_COLOR;
@@ -122,6 +128,8 @@ int Game::getCommand()
 	//for now, we can't read command longer than 50 characters
 	char input[50] = "\0";
 	//jump to the correct location
+	cout << CSI << PLAYER_INPUT_Y << ";" << 0 << "H";
+	//clear any existing text
 	cout << CSI << "4M";
 	cout << INDENT << "Enter a command.";
 	//move cursor to position for player to enter input
