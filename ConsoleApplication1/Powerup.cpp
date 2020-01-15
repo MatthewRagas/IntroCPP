@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "Powerup.h"
+#include <iostream>
 
 
 Powerup::Powerup(const char name[30], float health, float attack, float defence)
 {
+	strcpy_s(m_name, name);
 }
 
 
@@ -28,5 +30,10 @@ float Powerup::getAttackMultiplier()
 
 float Powerup::getDefenceMultiplier()
 {
-	return
+	return m_defenceMultiplier;
+}
+
+bool Powerup::compare(const Powerup* p1, const Powerup* p2)
+{
+	return (strcmp(p1->m_name, p2->m_name) < 0) ? true : false;
 }

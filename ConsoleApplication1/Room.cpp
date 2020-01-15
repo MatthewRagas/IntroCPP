@@ -1,11 +1,18 @@
 #include "pch.h"
 #include "Room.h"
 #include "GameDefines.h"
+#include "Powerup.h"
+#include "Player.h"
+#include "Food.h"
 #include <iostream>
 using namespace std;
 
-Room::Room() : m_type{ EMPTY }, m_mapPosition{ 0,0 }
+
+
+Room::Room() : m_type{ EMPTY }, m_mapPosition{ 0,0 }, m_powerup{ nullptr },
+m_enemy{ nullptr }, m_food{ nullptr }
 {
+
 }
 
 Room::~Room()
@@ -39,18 +46,22 @@ void Room::draw()
 	switch(m_type)
 	{
 		case EMPTY:
+			if (m_enemy != nullptr)
+			{
+				cout << "[ " << RED << "\x94" << RESET_COLOR << " ] ";
+				break;
+			}
+			if (m_enemy != nullptr)
+			{
+				cout << "[ " << YELLOW << "$" << RESET_COLOR << " ] ";
+				break;
+			}
+			if (m_enemy != nullptr)
+			{
+				cout << "[ " << WHITE << "\xcf" << RESET_COLOR << " ] ";
+				break;
+			}
 			cout << "[ " << GREEN << "\xb0" << RESET_COLOR << " ] ";
-			break;
-		case ENEMY:
-			cout << "[ " << RED << "\x94" << RESET_COLOR << " ] ";
-			break;
-		case TREASURE_HP:
-		case TREASURE_AT:
-		case TREASURE_DF:
-			cout << "[ " << YELLOW << "\$" << RESET_COLOR << " ] ";
-			break;
-		case FOOD:
-			cout << "[ " << WHITE << "\xcf" << RESET_COLOR << " ] ";
 			break;
 		case ENTRANCE:
 			cout << "[ " << WHITE << "\x9d" << RESET_COLOR << " ] ";
@@ -71,18 +82,23 @@ void Room::drawDescription()
 	switch (m_type)
 	{
 	case EMPTY:
+		if (m_enemy != nullptr)
+		{
+			cout << INDENT << RED << "BEWARE." << RESET_COLOR << " An enemy is approaching." << endl;
+			break;
+		}
+		if (m_powerup != nullptr)
+		{
+			cout << INDENT << "There appears to be some treasure here. "
+				"Perhaps you should investigate further." << endl;
+			break;
+		}
+		if (m_food != nullptr)
+		{
+			cout << INDENT << "At last! You collect some food to sustain you on your journey." << std::endl;
+			break;
+		}
 		cout << INDENT << "You are in an empty meadow. There is nothing of note here." << endl;
-		break;
-	case ENEMY:
-		cout << INDENT << "BEWARE. An enemy is approaching." << std::endl;
-		break;
-	case TREASURE_HP:
-	case TREASURE_AT:
-	case TREASURE_DF:
-		cout << INDENT << "There appears to be some treasure here. Perhaps you should investigate further." << std::endl;
-		break;
-	case FOOD:
-		cout << INDENT << "At last! You collect some food to sustain you on your journey." << std::endl;
 		break;
 	case ENTRANCE:
 		cout << INDENT << "The entrance you used to enter this maze is blocked. There is no going back." << std::endl;
@@ -93,7 +109,7 @@ void Room::drawDescription()
 	}
 }
 
-bool Room::executeCommand(int command)
+bool Room::executeCommand(int command, Player* _player)
 {
 	cout << EXTRA_OUTPUT_POS;
 	switch (command)
@@ -118,6 +134,8 @@ bool Room::executeCommand(int command)
 		cin.ignore(std::cin.rdbuf()->in_avail());
 		cin.get();
 		return true;
+	case PICKUP:
+		return pickup(_player);
 	default:
 		cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You try, but you just can't do it." << endl;
 		cout << INDENT << "Press 'Enter' to continue.";
@@ -127,4 +145,31 @@ bool Room::executeCommand(int command)
 		break;
 	}
 	return false;
+}
+
+bool Room::pickup(Player* _player)
+{
+	if (m_powerup == nullptr)
+	{
+		cout << EXTRA_OUTPUT_POS << RESET_COLOR << "There is nothing here to pick up." << endl;
+		return true;
+	}
+
+	cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You pick up the " << m_powerup->getname() << endl;
+
+	//add the powerup to the player's inventory
+	_player->addPowerup(m_powerup);
+
+	//remove the powerup from the room
+	//(but don't delete it, the player owns it now)
+	m_powerup = nullptr;
+
+	//change this room type to empty
+	m_type = EMPTY;
+
+	cout << INDENT << "Press 'Enter' to continue.";
+	cin.clear();
+	cin.ignore(cin.rdbuf()->in_avail());
+	cin.get();
+	return true;
 }
