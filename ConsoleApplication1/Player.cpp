@@ -4,11 +4,11 @@
 #include <iostream>
 using namespace std;
 
-Player::Player() : m_mapPosition{ 0, 0 }
+Player::Player() : m_mapPosition{ 0, 0 }, m_healthPoints{100}, m_attackPoints{20}, m_defencePoints{20}
 {	
 }
 
-Player::Player(int x, int y) : m_mapPosition{ x, y }
+Player::Player(int x, int y) : m_mapPosition{ x, y }, m_healthPoints{ 100 }, m_attackPoints{ 20 }, m_defencePoints{ 20 }
 {	
 }
 
@@ -38,7 +38,7 @@ void Player::draw()
 	cout << MAGENTA << "\x81" << RESET_COLOR;
 }
 
-bool Player::executeCommand(int command)
+bool Player::executeCommand(int command, int roomType)
 {
 	switch (command)
 	{
@@ -60,4 +60,35 @@ bool Player::executeCommand(int command)
 		return true;
 	}
 	return false;
+}
+
+bool Player::pickup(int roomType)
+{
+	static const char itemNames[15][30] = {
+		"indifference","invisibility", "invulnerability", "incontinence",
+		"improbability", "impatience", "indecision", "inspiration",
+		"independence", "incurability", "integration", "invocation",
+		"inferno", "indeigestion", "inoculation"
+	};
+
+	int item = rand() % 15;
+	
+	switch (roomType)
+	{
+	case TREASURE_HP:
+		strcpy(name, "potion of ");
+		break;
+	case TREASURE_AT:
+		strcpy(name, "sword of ");
+		break;
+	case TREASURE_DF:
+		strcpy(name, "shield of ");
+		break;
+	default:
+		return false;
+	}
+
+	//append the item name to the string
+	strncat(name, itemNames[item], 30);
+	cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You pick up the " << name << endl;
 }

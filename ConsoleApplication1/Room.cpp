@@ -44,7 +44,9 @@ void Room::draw()
 		case ENEMY:
 			cout << "[ " << RED << "\x94" << RESET_COLOR << " ] ";
 			break;
-		case TREASURE:
+		case TREASURE_HP:
+		case TREASURE_AT:
+		case TREASURE_DF:
 			cout << "[ " << YELLOW << "\$" << RESET_COLOR << " ] ";
 			break;
 		case FOOD:
@@ -74,8 +76,10 @@ void Room::drawDescription()
 	case ENEMY:
 		cout << INDENT << "BEWARE. An enemy is approaching." << std::endl;
 		break;
-	case TREASURE:
-		cout << INDENT << "Your journey has been rewarded. You have found some treasure." << std::endl;
+	case TREASURE_HP:
+	case TREASURE_AT:
+	case TREASURE_DF:
+		cout << INDENT << "There appears to be some treasure here. Perhaps you should investigate further." << std::endl;
 		break;
 	case FOOD:
 		cout << INDENT << "At last! You collect some food to sustain you on your journey." << std::endl;
@@ -91,6 +95,7 @@ void Room::drawDescription()
 
 bool Room::executeCommand(int command)
 {
+	cout << EXTRA_OUTPUT_POS;
 	switch (command)
 	{
 	case FIGHT:		
@@ -100,8 +105,15 @@ bool Room::executeCommand(int command)
 		cin.ignore(std::cin.rdbuf()->in_avail());
 		cin.get();
 		return true;
-	case LOOK:		
-		cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You look around, but see nothing worth mentioning.";
+	case LOOK:
+		if (m_type == TREASURE_HP || m_type == TREASURE_AT || m_type == TREASURE_DF)
+		{
+			cout << EXTRA_OUTPUT_POS << RESET_COLOR << "There is some treasure here. It looks small enought to pick up." << endl;
+		}
+		else
+		{
+			cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You look around, but see nothing worth mentioning." << endl;
+		}		
 		cin.clear();
 		cin.ignore(std::cin.rdbuf()->in_avail());
 		cin.get();
