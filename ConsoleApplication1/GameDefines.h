@@ -19,8 +19,8 @@ const char* const INVENTORY_OUTPUT_POS = "\x1b[24;6H";
 const int EMPTY = 0;
 
 
-const int ENTRANCE = 4;
-const int EXIT = 5;
+const int ENTRANCE = EMPTY + 1;
+const int EXIT = ENTRANCE + 1;
 
 const int MAZE_WIDTH = 10;
 const int MAZE_HEIGHT = 6;
@@ -43,14 +43,10 @@ const int FIGHT = 10;
 const int PICKUP = 11;
 const int QUIT = 12;
 
-static const char itemNames[15][30] = {
+static const char itemNames[15][30] = 
+{
 		"indifference","invisibility", "invulnerability", "incontinence",
 		"improbability", "impatience", "indecision", "inspiration",
 		"independence", "incurability", "integration", "invocation",
-		"inferno", "indeigestion", "inoculation"
-};static const char itemNames[15][30] = {
-		"indifference","invisibility", "invulnerability", "incontinence",
-		"improbability", "impatience", "indecision", "inspiration",
-		"independence", "incurability", "integration", "invocation",
-		"inferno", "indeigestion", "inoculation"
+		"inferno", "indeigestion", "inoculation" 
 };

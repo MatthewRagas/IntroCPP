@@ -8,9 +8,18 @@ Powerup::Powerup(const char name[30], float health, float attack, float defence)
 	strcpy_s(m_name, name);
 }
 
+Powerup::Powerup() : m_healthMultiplier{ 1 }, m_attackMultiplier{ 1 }, m_defenceMultiplier{ 1 }
+{
+	m_name[0] = 0;
+}
 
 Powerup::~Powerup()
 {
+}
+
+void Powerup::setName(const char* pStr)
+{
+	strncpy(m_name, pStr, 30);
 }
 
 char* Powerup::getname()

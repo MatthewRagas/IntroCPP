@@ -92,6 +92,17 @@ void Game::initializeEnemies()
 	//create a dynamic array of enemies
 	m_enemyCount = 1 + rand() % 4;
 	m_enemies = new Enemy[m_enemyCount];
+
+	//randomly place the enemies in rooms on the map
+	for (int i = 0; i < m_enemyCount; i++)
+	{
+		//prevent enemies from spawning on or next to the entrance
+		int x = 2 + (rand() % (MAZE_WIDTH - 3));
+		int y = 2 + (rand() % (MAZE_HEIGHT - 3));
+
+		m_enemies[i].setPosition(Point2D{ x,y });
+		m_map[y][x].setEnemy(&m_enemies[i]);
+	}
 }
 
 void Game::initializePowerups()
@@ -123,12 +134,12 @@ void Game::initializePowerups()
 			break;
 		case 2:
 			strcpy_s(name, "shield of ");
-			m_powerups[i].getDefenceMultiplier(1.1f);
+			m_powerups[i].setDefenceMultiplier(1.1f);
 			break;
 		}
 
 		strncat_s(name, itemNames[(rand() % 15)], 30);
-		m_powerups[i].getname(name);
+		m_powerups[i].setname(name);
 		m_map[y][x].setPowerup(&m_powerups[i]);
 	}
 }
@@ -272,10 +283,16 @@ void Game::update()
 		return;
 	}
 
-	if (m_player.executeCommand(command))
-		return;
+	m_player.executeCommand(command, &m_map[playerPos.y][playerPos.x]);
 
-	m_map[playerPos.y][playerPos.x].executeCommand(command, &m_player);
+	for (int i = 0; i < m_enemyCount; i++)
+	{
+		if (m_enemies[i].isAlive() == false)
+		{
+			Point2D pos = m_enemies[i].getPosition();
+			m_map[pos.y][pos.x].setEnemy(nullptr);
+		}
+	}
 }
 
 void Game::draw()
