@@ -3,7 +3,7 @@ class Food
 {
 public:
 	Food() : m_healthPoints{ 10 } {}
-	~Food();
+	~Food() {};
 
 	int getHP() { return m_healthPoints; }
 

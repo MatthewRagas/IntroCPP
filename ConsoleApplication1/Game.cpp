@@ -139,7 +139,7 @@ void Game::initializePowerups()
 		}
 
 		strncat_s(name, itemNames[(rand() % 15)], 30);
-		m_powerups[i].setname(name);
+		m_powerups[i].setName(name);
 		m_map[y][x].setPowerup(&m_powerups[i]);
 	}
 }

@@ -121,7 +121,7 @@ bool Room::executeCommand(int command, Player* _player)
 		cin.ignore(std::cin.rdbuf()->in_avail());
 		cin.get();
 		return true;
-	case LOOK:
+	/*case LOOK:
 		if (m_type == TREASURE_HP || m_type == TREASURE_AT || m_type == TREASURE_DF)
 		{
 			cout << EXTRA_OUTPUT_POS << RESET_COLOR << "There is some treasure here. It looks small enought to pick up." << endl;
@@ -129,13 +129,11 @@ bool Room::executeCommand(int command, Player* _player)
 		else
 		{
 			cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You look around, but see nothing worth mentioning." << endl;
-		}		
+		}		*/
 		cin.clear();
 		cin.ignore(std::cin.rdbuf()->in_avail());
 		cin.get();
-		return true;
-	case PICKUP:
-		return pickup(_player);
+		return true;	
 	default:
 		cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You try, but you just can't do it." << endl;
 		cout << INDENT << "Press 'Enter' to continue.";
@@ -145,31 +143,4 @@ bool Room::executeCommand(int command, Player* _player)
 		break;
 	}
 	return false;
-}
-
-bool Room::pickup(Player* _player)
-{
-	if (m_powerup == nullptr)
-	{
-		cout << EXTRA_OUTPUT_POS << RESET_COLOR << "There is nothing here to pick up." << endl;
-		return true;
-	}
-
-	cout << EXTRA_OUTPUT_POS << RESET_COLOR << "You pick up the " << m_powerup->getname() << endl;
-
-	//add the powerup to the player's inventory
-	_player->addPowerup(m_powerup);
-
-	//remove the powerup from the room
-	//(but don't delete it, the player owns it now)
-	m_powerup = nullptr;
-
-	//change this room type to empty
-	m_type = EMPTY;
-
-	cout << INDENT << "Press 'Enter' to continue.";
-	cin.clear();
-	cin.ignore(cin.rdbuf()->in_avail());
-	cin.get();
-	return true;
 }

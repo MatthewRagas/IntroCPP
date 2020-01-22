@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "Player.h"
 #include "Room.h"
+#include "Enemy.h"
 #include "Powerup.h"
+#include "Food.h"
 #include"GameDefines.h"
 #include <iostream>
 #include <algorithm>

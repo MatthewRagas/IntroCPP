@@ -19,7 +19,7 @@ Powerup::~Powerup()
 
 void Powerup::setName(const char* pStr)
 {
-	strncpy(m_name, pStr, 30);
+	strncpy_s(m_name, pStr, 30);
 }
 
 char* Powerup::getname()
