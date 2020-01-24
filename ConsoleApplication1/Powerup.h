@@ -1,12 +1,14 @@
 #pragma once
-class Powerup
+#include"GameObject.h"
+
+class Powerup : public GameObject
 {
 public:
 	Powerup();
 	Powerup(const char name[30], float health, float attack, float defence);
 	~Powerup();
 
-	char* getname();
+	char* getName();
 	float getHealthMultiplier();
 	float getAttackMultiplier();
 	float getDefenceMultiplier();
@@ -17,6 +19,9 @@ public:
 	void setDefenceMultiplier(float defence) { m_defenceMultiplier = defence; }
 
 	static bool compare(const Powerup* p1, const Powerup* p2);
+	void draw();
+	void drawDescription();
+	void lookAt();
 
 private:
 	char m_name[30];
