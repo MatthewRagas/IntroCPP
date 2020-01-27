@@ -114,10 +114,10 @@ void Room::lookAt()
 }
 
 Enemy* Room::getEnemy()
-{
-	for each (GameObject* pObj in m_objects)
+{	
+	for (GameObject* obj : m_objects)
 	{
-		Enemy* enemy = dynamic_cast<Enemy*>(pObj);
+		Enemy* enemy = dynamic_cast<Enemy*>(obj);
 		if (enemy != nullptr)
 			return enemy;
 	}
@@ -126,9 +126,9 @@ Enemy* Room::getEnemy()
 
 Powerup* Room::getPowerup()
 {
-	for each (GameObject* pObj in m_objects)
+	for (GameObject* Obj : m_objects)
 	{
-		Powerup* powerup = dynamic_cast<Powerup*>(pObj);
+		Powerup* powerup = dynamic_cast<Powerup*>(Obj);
 		if (powerup != nullptr)
 			return powerup;
 	}
@@ -137,9 +137,9 @@ Powerup* Room::getPowerup()
 
 Food* Room::getFood()
 {
-	for each (GameObject* pObj in m_objects)
+	for (GameObject* Obj : m_objects)
 	{
-		Food* food = dynamic_cast<Food*>(pObj);
+		Food* food = dynamic_cast<Food*>(Obj);
 		if (food != nullptr)
 			return food;
 	}

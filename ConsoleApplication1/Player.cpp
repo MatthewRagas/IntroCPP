@@ -87,7 +87,7 @@ void Player::executeCommand(int command, Room* _room)
 		_room->lookAt();
 		break;
 	case FIGHT:
-		attack(_room->getenemy());
+		attack(_room->getEnemy());
 		break;
 	case PICKUP:
 		pickup(_room);
